@@ -80,38 +80,35 @@
   font-size: clamp(24px, 5vw, 40px);
   user-select: none;
   transition: transform 0.2s ease, text-shadow 0.2s ease;
-  color: inherit; /* Force inheritance from .white or .black */
+  color: inherit; /* Uses .white or .black below */
+  opacity: 1 !important; /* Ensure no blending */
 }
 
+/* White pieces: pure white fill + strong black outline */
 .piece.white {
-  color: #ffffff !important; /* Always pure white */
+  color: #ffffff !important;
   text-shadow:
+    0 0 2px #000,
+    0 0 3px #000,
     -1px -1px 0 #000,
      1px -1px 0 #000,
     -1px  1px 0 #000,
      1px  1px 0 #000;
+  opacity: 1 !important; /* Ensure solid fill */
 }
 
+/* Black pieces: pure black fill + strong white outline */
 .piece.black {
-  color: #000000 !important; /* Always pure black */
+  color: #000000 !important;
   text-shadow:
+    0 0 2px #fff,
+    0 0 3px #fff,
     -1px -1px 0 #fff,
      1px -1px 0 #fff,
     -1px  1px 0 #fff,
      1px  1px 0 #fff;
+  opacity: 1 !important; /* Ensure solid fill */
 }
-
-
-
-.piece.black {
-  color: #000000;
-  text-shadow:
-    -1px -1px 0 #fff,
-     1px -1px 0 #fff,
-    -1px  1px 0 #fff,
-     1px  1px 0 #fff;
-}
-
 
 /* Draggable feedback */
 .piece.draggable {
@@ -122,6 +119,10 @@
   opacity: 0.8;
   transform: scale(1.15);
 }
+
+
+
+ 
 
 /* ===================================
    Flipped Board for Black Player
