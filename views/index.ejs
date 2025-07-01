@@ -1,29 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-zinc-900">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Glossy Chessboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %></title>
 
-  <!-- Tailwind for utility if needed -->
   <script src="https://cdn.tailwindcss.com"></script>
+ <link rel="stylesheet" href="/css/style.css">
 
-  <!-- Your custom premium board styles -->
-  <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body class="flex items-center justify-center h-screen">
+<body class="w-full h-screen flex items-center justify-center bg-zinc-900">
   <div class="chessboard-container">
-    <div class="game-status">Your Turn</div>
+     
     <div class="chessboard"></div>
   </div>
 
-  <!-- Sockets & chess.js -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"
-    integrity="sha512-xRllwz2gdZciIB+AkEbeq+VhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA=="
+    integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <!-- Your game logic -->
   <script src="/js/chessGame.js"></script>
 </body>
 </html>
