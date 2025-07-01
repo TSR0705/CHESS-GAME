@@ -1,0 +1,155 @@
+/* ===================================
+   Chessboard Container
+   =================================== */
+.chessboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: radial-gradient(circle at center, #1a202c 0%, #2d3748 100%);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+}
+
+/* ===================================
+   Chessboard Grid
+   =================================== */
+.chessboard {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: clamp(320px, 80vw, 640px);
+  aspect-ratio: 1/1;
+  border: 12px solid #3e2f23; /* Dark rich wood frame */
+  border-radius: 0.5rem;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5), 0 12px 40px rgba(0, 0, 0, 0.5);
+  background: #000; /* fallback */
+  overflow: hidden;
+  position: relative;
+}
+
+/* ===================================
+   Chessboard Squares (Glossy Wood)
+   =================================== */
+.square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+/* Light wood square with subtle shine */
+.square.light {
+  background: linear-gradient(
+    135deg,
+    #f0d9b5 0%,
+    #f9e5c7 50%,
+    #f0d9b5 100%
+  );
+  box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.2),
+              inset 0 -2px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark wood square with rich gloss */
+.square.dark {
+  background: linear-gradient(
+    135deg,
+    #b58863 0%,
+    #a16d4f 50%,
+    #b58863 100%
+  );
+  box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.15),
+              inset 0 -2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.square.highlight {
+  background: radial-gradient(circle, rgba(255, 255, 0, 0.3) 30%, transparent 70%);
+}
+
+/* ===================================
+   Pieces (Premium Look)
+   =================================== */
+/* Base piece style — uses inherit */
+.piece {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(24px, 5vw, 40px);
+  user-select: none;
+  transition: transform 0.2s ease, text-shadow 0.2s ease;
+  color: inherit; /* Force inheritance from .white or .black */
+}
+
+.piece.white {
+  color: #ffffff !important; /* Always pure white */
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+.piece.black {
+  color: #000000 !important; /* Always pure black */
+  text-shadow:
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff;
+}
+
+
+
+.piece.black {
+  color: #000000;
+  text-shadow:
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff;
+}
+
+
+/* Draggable feedback */
+.piece.draggable {
+  cursor: grab;
+}
+
+.piece.dragging {
+  opacity: 0.8;
+  transform: scale(1.15);
+}
+
+/* ===================================
+   Flipped Board for Black Player
+   =================================== */
+.flipped {
+  transform: rotate(180deg);
+}
+
+.flipped .piece {
+  transform: rotate(180deg);
+}
+
+/* ===================================
+   Game Status Text
+   =================================== */
+.game-status {
+  color: #e2e8f0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ===================================
+   Responsive Board
+   =================================== */
+@media (max-width: 640px) {
+  .chessboard {
+    width: 100%;
+    max-width: 400px;
+  }
+}

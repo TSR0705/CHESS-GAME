@@ -1,0 +1,26 @@
+{
+  "name": "chess-game-using-socket.io",
+  "version": "1.0.0",
+  "description": "CHESS GAME",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TSR0705/BACKEND-CONCEPTS.git"
+  },
+  "author": "TANMAY SINGH",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TSR0705/BACKEND-CONCEPTS/issues"
+  },
+  "homepage": "https://github.com/TSR0705/BACKEND-CONCEPTS#readme",
+  "dependencies": {
+    "chess.js": "^1.4.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10",
+    "socket.io": "^4.8.1"
+  }
+}
