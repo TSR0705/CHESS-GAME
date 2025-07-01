@@ -5,147 +5,99 @@ const boardElement = document.querySelector(".chessboard");
 let draggedPiece = null;
 let sourceSquare = null;
 let playerRole = null;
-let currentTurn = "w"; // Tracks whose turn it is
 
+// Render the board from the chess.js instance
 const renderBoard = () => {
   const board = chess.board();
   boardElement.innerHTML = "";
 
-  board.forEach((row, rowindex) => {
-    row.forEach((square, squareindex) => {
-      const squareElement = document.createElement("div");
-      squareElement.classList.add(
+  board.forEach((row, rowIndex) => {
+    row.forEach((square, colIndex) => {
+      const squareEl = document.createElement("div");
+      squareEl.classList.add(
         "square",
-        (rowindex + squareindex) % 2 === 0 ? "light" : "dark"
+        (rowIndex + colIndex) % 2 === 0 ? "light" : "dark"
       );
-
-      squareElement.dataset.row = rowindex;
-      squareElement.dataset.col = squareindex;
+      squareEl.dataset.row = rowIndex;
+      squareEl.dataset.col = colIndex;
 
       if (square) {
-        const pieceElement = document.createElement("div");
-        pieceElement.classList.add(
+        const pieceEl = document.createElement("div");
+        pieceEl.classList.add(
           "piece",
           square.color === "w" ? "white" : "black"
         );
-        pieceElement.innerText = getPieceUnicode(square);
+        pieceEl.innerText = getPieceUnicode(square);
+        const isMyTurnPawn = playerRole === square.color && playerRole === chess.turn();
+        pieceEl.draggable = !!isMyTurnPawn;
+        if (isMyTurnPawn) pieceEl.classList.add("draggable");
 
-        const isPlayerPiece = playerRole === square.color && playerRole === currentTurn;
-        pieceElement.draggable = isPlayerPiece;
-
-        if (isPlayerPiece) {
-          pieceElement.classList.add("draggable");
-        }
-
-        pieceElement.addEventListener("dragstart", (e) => {
-          if (pieceElement.draggable) {
-            draggedPiece = pieceElement;
-            sourceSquare = { row: rowindex, col: squareindex };
-            e.dataTransfer.setData("text/plain", "");
-            pieceElement.classList.add("dragging");
+        pieceEl.addEventListener("dragstart", () => {
+          if (pieceEl.draggable) {
+            draggedPiece = pieceEl;
+            sourceSquare = { row: rowIndex, col: colIndex };
+            pieceEl.classList.add("dragging");
           }
         });
-
-        pieceElement.addEventListener("dragend", (e) => {
+        pieceEl.addEventListener("dragend", () => {
           draggedPiece = null;
           sourceSquare = null;
-          pieceElement.classList.remove("dragging");
+          pieceEl.classList.remove("dragging");
         });
 
-        squareElement.appendChild(pieceElement);
+        squareEl.appendChild(pieceEl);
       }
 
-      squareElement.addEventListener("dragover", function (e) {
-        e.preventDefault();
-      });
-
-      squareElement.addEventListener("drop", function (e) {
+      squareEl.addEventListener("dragover", (e) => e.preventDefault());
+      squareEl.addEventListener("drop", (e) => {
         e.preventDefault();
         if (draggedPiece && sourceSquare) {
-          const targetSource = {
-            row: parseInt(squareElement.dataset.row),
-            col: parseInt(squareElement.dataset.col),
+          const target = {
+            row: +squareEl.dataset.row,
+            col: +squareEl.dataset.col,
           };
-          handleMove(sourceSquare, targetSource);
+          const move = {
+            from: String.fromCharCode(97 + sourceSquare.col) + (8 - sourceSquare.row),
+            to: String.fromCharCode(97 + target.col) + (8 - target.row),
+            promotion: "q",
+          };
+          socket.emit("move", move);
         }
       });
 
-      boardElement.appendChild(squareElement);
+      boardElement.appendChild(squareEl);
     });
   });
 
-  if (playerRole === "b") {
-    boardElement.classList.add("flipped");
-  } else {
-    boardElement.classList.remove("flipped");
-  }
-};
-
-const handleMove = (source, target) => {
-  if (playerRole !== currentTurn) return; // Prevent moving if it's not your turn
-
-  const move = {
-    from: `${String.fromCharCode(97 + source.col)}${8 - source.row}`,
-    to: `${String.fromCharCode(97 + target.col)}${8 - target.row}`,
-    promotion: "q",
-  };
-
-  const result = chess.move(move);
-  if (result) {
-    currentTurn = currentTurn === "w" ? "b" : "w";
-    renderBoard();
-    socket.emit("move", move);
-    checkGameStatus();
-  }
+  // Flip board if you're black
+  boardElement.classList.toggle("flipped", playerRole === "b");
 };
 
 const getPieceUnicode = (piece) => {
-  const unicodeMap = {
-    p: "♟",
-    r: "♜",
-    n: "♞",
-    b: "♝",
-    q: "♛",
-    k: "♚",
-    P: "♙",
-    R: "♖",
-    N: "♘",
-    B: "♗",
-    Q: "♕",
-    K: "♔",
-  };
-  return unicodeMap[piece.type] || "";
+  const map = {
+  p: "♟", r: "♜", n: "♞", b: "♝",
+  q: "♛", k: "♚", P: "♙", R: "♖",
+  N: "♘", B: "♗", Q: "♕", K: "♔",
 };
 
-const checkGameStatus = () => {
-  if (chess.isCheckmate()) {
-    alert("Checkmate! Game Over.");
-  } else if (chess.isDraw()) {
-    alert("Draw! Game Over.");
-  }
+  return map[piece.type] || "?";
 };
 
-socket.on("playerRole", function (role) {
+// Socket listeners
+socket.on("playerRole", (role) => {
   playerRole = role;
   renderBoard();
 });
-
-socket.on("spectatorRole", function () {
+socket.on("spectatorRole", () => {
   playerRole = null;
   renderBoard();
 });
-
-socket.on("boardState", function (fen) {
+socket.on("boardState", (fen) => {
   chess.load(fen);
-  currentTurn = chess.turn();
   renderBoard();
 });
 
-socket.on("move", function (move) {
-  chess.move(move);
-  currentTurn = chess.turn();
-  renderBoard();
-  checkGameStatus();
-});
-
+// Initial render (empty board until first boardState arrives)
 renderBoard();
+
+
